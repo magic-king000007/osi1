@@ -11,7 +11,7 @@ is_windows = False
 
 try:
     import gnureadline  
-except: 
+except ImportError: 
     is_windows = True
     import pyreadline
 
@@ -33,7 +33,7 @@ def cmdlist():
     pc.printout("JSON=y/n\t")
     print("Enable/disable export in a '<target username>_<command>.json' file'")
     pc.printout("addrs\t\t")
-    print("Get all registered addressed by target photos")
+    print("Get all registered addresses by target photos")
     pc.printout("cache\t\t")
     print("Clear cache of the tool")
     pc.printout("captions\t")
@@ -75,9 +75,9 @@ def cmdlist():
     pc.printout("target\t\t")
     print("Set new target")
     pc.printout("wcommented\t")
-    print("Get a list of user who commented target's photos")
+    print("Get a list of users who commented on target's photos")
     pc.printout("wtagged\t\t")
-    print("Get a list of user who tagged target")
+    print("Get a list of users who tagged target")
 
 
 def signal_handler(sig, frame):
@@ -92,6 +92,7 @@ def completer(text, state):
     else:
         return None
 
+
 def _quit():
     pc.printout("Goodbye!\n", pc.RED)
     sys.exit(0)
@@ -105,11 +106,11 @@ else:
     gnureadline.parse_and_bind("tab: complete")
     gnureadline.set_completer(completer)
 
-parser = argparse.ArgumentParser(description='Osintgram is a OSINT tool on Instagram. It offers an interactive shell '
-                                             'to perform analysis on Instagram account of any users by its nickname ')
+parser = argparse.ArgumentParser(description='Osintgram is an OSINT tool on Instagram. It offers an interactive shell '
+                                             'to perform analysis on an Instagram account of any user by their username')
 parser.add_argument('id', type=str,  # var = id
                     help='username')
-parser.add_argument('-C','--cookies', help='clear\'s previous cookies', action="store_true")
+parser.add_argument('-C','--cookies', help='clear previous cookies', action="store_true")
 parser.add_argument('-j', '--json', help='save commands output as JSON file', action='store_true')
 parser.add_argument('-f', '--file', help='save output in a file', action='store_true')
 parser.add_argument('-c', '--command', help='run in single command mode & execute provided command', action='store')
@@ -117,10 +118,7 @@ parser.add_argument('-o', '--output', help='where to store photos', action='stor
 
 args = parser.parse_args()
 
-
 api = Osintgram(args.id, args.file, args.json, args.command, args.output, args.cookies)
-
-
 
 commands = {
     'list':             cmdlist,
@@ -152,7 +150,6 @@ commands = {
     'wtagged':          api.get_people_who_tagged
 }
 
-
 signal.signal(signal.SIGINT, signal_handler)
 if is_windows:
     pyreadline.Readline().parse_and_bind("tab: complete")
@@ -163,7 +160,6 @@ else:
 
 if not args.command:
     printlogo()
-
 
 while True:
     if args.command:
